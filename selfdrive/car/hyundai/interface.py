@@ -176,7 +176,7 @@ class CarInterface(CarInterfaceBase):
     ret.brakeMaxBP = [0., 20.]
     ret.brakeMaxV = [1., 0.8]
 
-    ret.enableCamera = is_ecu_disconnected(fingerprint[0], FINGERPRINTS, ECU_FINGERPRINT, candidate, Ecu.fwdCamera) or has_relay
+    ret.enableCamera = True #is_ecu_disconnected(fingerprint[0], FINGERPRINTS, ECU_FINGERPRINT, candidate, Ecu.fwdCamera) or has_relay
     ret.openpilotLongitudinalControl = True
 
     ret.stoppingControl = True

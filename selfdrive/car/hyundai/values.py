@@ -29,6 +29,8 @@ class CAR:
   KIA_FORTE = "KIA FORTE E 2018"
   ELANTRA_GT_I30 = "HYUNDAI I30 N LINE 2019 & GT 2018 DCT"
   KIA_SPORTAGE = "KIA SPORTAGE S 2020"
+  KIA_FORTE_KOUP_2013 = "KIA FORTE KOUP 2013"
+
 
 class Buttons:
   NONE = 0
@@ -130,6 +132,9 @@ FINGERPRINTS = {
   CAR.KIA_SPORTAGE: [{
     67: 8, 68: 8, 127: 8, 273: 8, 274: 8, 275: 8, 339: 8, 356: 4, 399: 8, 447: 8, 512: 6, 544: 8, 593: 8, 608: 8, 688: 5, 790: 8, 809: 8, 832: 8, 884: 8, 897: 8, 899: 8, 902: 8, 903: 6, 909: 8, 916: 8, 1040: 8, 1078: 4, 1170: 8, 1191: 2, 1253: 8, 1254: 8, 1255: 8, 1265: 4, 1280: 1, 1282: 4, 1287: 4, 1292: 8, 1294: 8, 1312: 8, 1322: 8, 1342: 6, 1345: 8, 1348: 8, 1349: 8, 1351: 8, 1353: 8, 1363: 8, 1365: 8, 1366: 8, 1367: 8, 1369: 8, 1407: 8, 1419: 8, 1427: 6, 1440: 8, 1456: 4, 1470: 8, 1472: 8, 1486: 8, 1487: 8, 1491: 8, 1492: 8, 1530: 8
   }],
+  CAR.KIA_FORTE_KOUP_2013: [{
+    2: 8, 24: 8, 52: 8, 66: 8, 67: 8, 80: 4, 128: 8, 129: 8, 160: 8, 161: 8, 272: 8, 288: 4, 304: 8, 305: 8, 320: 8, 339: 8, 356: 8, 357: 8, 399: 8, 497: 8, 544: 8, 608: 8, 672: 8, 688: 5, 704: 8, 790: 8, 809: 8, 848: 8, 880: 8, 898: 8, 1087: 8, 1088: 8, 1200: 8, 1201: 8, 1264: 8, 1265: 8, 1266: 8, 1296: 8, 1321: 8, 1349: 8, 1414: 3, 1435: 8, 1440: 8, 1442: 4, 1508: 3, 1680: 8
+  }],
 }
 
 ECU_FINGERPRINT = {
@@ -145,6 +150,7 @@ FEATURES = {
   "use_cluster_gears": [CAR.ELANTRA, CAR.KONA, CAR.ELANTRA_GT_I30],     # Use Cluster for Gear Selection, rather than Transmission
   "use_tcu_gears": [CAR.KIA_OPTIMA],                                    # Use TCU Message for Gear Selection
   "use_elect_gears": [CAR.KIA_OPTIMA_H, CAR.IONIQ_EV_LTD, CAR.KONA_EV], # Use TCU Message for Gear Selection
+  "use_tcu_old_gears": [CAR.KIA_FORTE_KOUP_2013], # Use TCU Message for Gear Selection
 }
 
 DBC = {
@@ -165,6 +171,7 @@ DBC = {
   CAR.KIA_FORTE: dbc_dict('hyundai_kia_generic', None),
   CAR.ELANTRA_GT_I30: dbc_dict('hyundai_kia_generic', None),
   CAR.KIA_SPORTAGE: dbc_dict('hyundai_kia_generic', None),
+  CAR.KIA_FORTE_KOUP_2013: dbc_dict('kia_forte_koup_2013', None),
 }
 
 STEER_THRESHOLD = 150

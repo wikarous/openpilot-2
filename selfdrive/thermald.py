@@ -307,6 +307,10 @@ def thermald_thread():
 
     should_start = ignition
 
+    #If Get Health Data From Car Turn On Vision Camera
+    if health is not None:
+      should_start = True
+
     # with 2% left, we killall, otherwise the phone will take a long time to boot
     should_start = should_start and msg.thermal.freeSpace > 0.02
 

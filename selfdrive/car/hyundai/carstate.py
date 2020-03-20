@@ -325,8 +325,6 @@ class CarState(CarStateBase):
     cp_sas = cp2 if self.sas_bus else cp
     cp_scc = cp2 if self.scc_bus == 1 else cp_cam if self.scc_bus == 2 else cp
 
-    #self.vsm11 = cp.vl["VSM11"]
-
     # update prevs, update must run once per Loop
     self.prev_left_blinker_on = self.left_blinker_on
     self.prev_right_blinker_on = self.right_blinker_on
@@ -476,3 +474,4 @@ class CarState(CarStateBase):
     self.scc12 = cp_scc.vl["SCC12"]
 
     self.mdps12 = cp_mdps.vl["MDPS12"]
+    #self.vsm11 = cp.vl["VSM11"]

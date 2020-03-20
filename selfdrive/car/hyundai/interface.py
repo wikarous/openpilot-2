@@ -197,6 +197,7 @@ class CarInterface(CarInterfaceBase):
     ret.enableCamera = is_ecu_disconnected(fingerprint[0], FINGERPRINTS, ECU_FINGERPRINT, candidate, Ecu.fwdCamera) or has_relay
     ret.enableCamera = True
     ret.openpilotLongitudinalControl = True
+    #ret.openpilotLongitudinalControl = False
 
     ret.stoppingControl = True
     ret.startAccel = 0.0
@@ -222,6 +223,7 @@ class CarInterface(CarInterfaceBase):
     ret = car.CarState.new_message()
 
     ret.canValid = self.cp.can_valid and self.cp_cam.can_valid
+    ret.canValid = self.cp.can_valid  # TODO: check cp_cam validity
 
     # speeds
     ret.vEgo = self.CS.v_ego

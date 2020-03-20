@@ -492,6 +492,7 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
   AM = AlertManager()
 
   startup_alert = get_startup_alert(car_recognized, controller_available)
+  startup_alert = 'startup'
   AM.add(sm.frame, startup_alert, False)
 
   LoC = LongControl(CP, CI.compute_gb)
@@ -583,6 +584,12 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
                     LaC, LoC, read_only, is_metric, cal_perc, last_blinker_frame)
 
     prof.checkpoint("State Control")
+    prrint('DATA!!!',events)
+    prrint('DATA!!!',CS)
+    prrint('DATA!!!',sm['plan'])
+    prrint('DATA!!!',sm['pathPlan'])
+    prrint('DATA!!!',sm.alive['plan'])
+    prrint('DATA!!!',read_only,'  ',passive)
 
     # Publish data
     CC, events_prev = data_send(sm, pm, CS, CI, CP, VM, state, events, actuators, v_cruise_kph, rk, AM, LaC,

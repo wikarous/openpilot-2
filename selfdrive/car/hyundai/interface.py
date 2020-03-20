@@ -144,7 +144,7 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.13], [0.009]]
       ret.minSteerSpeed = 32 * CV.MPH_TO_MS
       ret.steerRateCost = 0.8 
-    elif candidate == CAR.KIA_FORTE:
+    elif candidate in [CAR.KIA_FORTE,CAR.KIA_FORTE_KOUP_2013]:
       ret.lateralTuning.pid.kf = 0.00005
       ret.mass = 3558. * CV.LB_TO_KG
       ret.wheelbase = 2.80
@@ -195,6 +195,7 @@ class CarInterface(CarInterfaceBase):
     ret.brakeMaxV = [1., 0.8]
 
     ret.enableCamera = is_ecu_disconnected(fingerprint[0], FINGERPRINTS, ECU_FINGERPRINT, candidate, Ecu.fwdCamera) or has_relay
+    ret.enableCamera = True
     ret.openpilotLongitudinalControl = True
 
     ret.stoppingControl = True

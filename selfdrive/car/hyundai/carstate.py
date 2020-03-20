@@ -171,7 +171,7 @@ def get_can_parser(CP):
   elif CP.carFingerprint in FEATURES["use_elect_gears"]:
     signals += [
       ("Elect_Gear_Shifter", "ELECT_GEAR", 0),
-	]
+    ]
   else:
     signals += [
       ("CF_Lvr_Gear","LVR12",0),

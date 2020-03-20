@@ -58,6 +58,13 @@ def get_can_parser(CP):
     ("CF_Lca_Stat", "LCA11", 0),
     ("CF_Lca_IndLeft", "LCA11", 0),
     ("CF_Lca_IndRight", "LCA11", 0),
+
+    #("CR_Esc_StrTqReq", "VSM11", 0),
+    #("CF_Esc_Act", "VSM11", 0),
+    #("CF_Esc_CtrMode", "VSM11", 0),
+    #("CF_Esc_Def", "VSM11", 0),
+    #("CF_Esc_AliveCnt", "VSM11", 0),
+    #("CF_Esc_Chksum", "VSM11", 0),
   ]
 
   checks = [
@@ -317,6 +324,8 @@ class CarState(CarStateBase):
     cp_mdps = cp2 if self.mdps_bus else cp
     cp_sas = cp2 if self.sas_bus else cp
     cp_scc = cp2 if self.scc_bus == 1 else cp_cam if self.scc_bus == 2 else cp
+
+    #self.vsm11 = cp.vl["VSM11"]
 
     # update prevs, update must run once per Loop
     self.prev_left_blinker_on = self.left_blinker_on

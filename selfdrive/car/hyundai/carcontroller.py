@@ -140,6 +140,8 @@ class CarController():
     self.clu11_cnt = frame % 0x10
     self.mdps12_cnt = frame % 0x100
 
+    #create_vsm11(self.packer, CS.vsm11, enabled, 1, steer_req, self.lkas11_cnt)
+
     can_sends.append(create_lkas11(self.packer, self.car_fingerprint, 0, apply_steer, steer_req, self.lkas11_cnt, lkas_active,
                                    CS.lkas11, hud_alert, lane_visible, left_lane_depart, right_lane_depart, keep_stock=True))
     if CS.mdps_bus or CS.scc_bus == 1: # send lkas12 bus 1 if mdps or scc is on bus 1

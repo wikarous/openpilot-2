@@ -59,12 +59,12 @@ def get_can_parser(CP):
     ("CF_Lca_IndLeft", "LCA11", 0),
     ("CF_Lca_IndRight", "LCA11", 0),
 
-    #("CR_Esc_StrTqReq", "VSM11", 0),
-    #("CF_Esc_Act", "VSM11", 0),
-    #("CF_Esc_CtrMode", "VSM11", 0),
-    #("CF_Esc_Def", "VSM11", 0),
-    #("CF_Esc_AliveCnt", "VSM11", 0),
-    #("CF_Esc_Chksum", "VSM11", 0),
+    ("CR_Esc_StrTqReq", "VSM11", 0),
+    ("CF_Esc_Act", "VSM11", 0),
+    ("CF_Esc_CtrMode", "VSM11", 0),
+    ("CF_Esc_Def", "VSM11", 0),
+    ("CF_Esc_AliveCnt", "VSM11", 0),
+    ("CF_Esc_Chksum", "VSM11", 0),
   ]
 
   checks = [
@@ -332,7 +332,7 @@ class CarState(CarStateBase):
     self.door_all_closed = not any([cp.vl["CGW1"]['CF_Gway_DrvDrSw'],cp.vl["CGW1"]['CF_Gway_AstDrSw'],
                                    cp.vl["CGW2"]['CF_Gway_RLDrSw'], cp.vl["CGW2"]['CF_Gway_RRDrSw']])
 
-    if CP.carFingerprint == CAR.KIA_FORTE_KOUP_2013:
+    if self.CP.carFingerprint == CAR.KIA_FORTE_KOUP_2013:
       self.seatbelt = cp.vl["CLU2"]['CF_Clu_DrvSeatBeltSw']
     else:
       self.seatbelt = cp.vl["CGW1"]['CF_Gway_DrvSeatBeltSw']
@@ -347,7 +347,7 @@ class CarState(CarStateBase):
                                       (cp.vl["LVR12"]['CF_Lvr_CruiseSet'] != 0)
     self.pcm_acc_status = int(self.acc_active)
 
-    if CP.carFingerprint == CAR.KIA_FORTE_KOUP_2013:
+    if self.CP.carFingerprint == CAR.KIA_FORTE_KOUP_2013:
       self.v_wheel_fl = cp.vl["WHL_SPD"]['WHL_SPD_FL'] * CV.KPH_TO_MS
       self.v_wheel_fr = cp.vl["WHL_SPD"]['WHL_SPD_FR'] * CV.KPH_TO_MS
       self.v_wheel_rl = cp.vl["WHL_SPD"]['WHL_SPD_RL'] * CV.KPH_TO_MS
@@ -357,6 +357,12 @@ class CarState(CarStateBase):
       self.v_wheel_fr = cp.vl["WHL_SPD11"]['WHL_SPD_FR'] * CV.KPH_TO_MS
       self.v_wheel_rl = cp.vl["WHL_SPD11"]['WHL_SPD_RL'] * CV.KPH_TO_MS
       self.v_wheel_rr = cp.vl["WHL_SPD11"]['WHL_SPD_RR'] * CV.KPH_TO_MS
+
+    self.v_wheel_fl = 50 * CV.KPH_TO_MS
+    self.v_wheel_fr = 50 * CV.KPH_TO_MS
+    self.v_wheel_rl = 50 * CV.KPH_TO_MS
+    self.v_wheel_rr = 50 * CV.KPH_TO_MS
+
 
     self.v_ego_raw = (self.v_wheel_fl + self.v_wheel_fr + self.v_wheel_rl + self.v_wheel_rr) / 4.
     self.v_ego, self.a_ego = self.update_speed_kf(self.v_ego_raw)
@@ -397,10 +403,11 @@ class CarState(CarStateBase):
       self.pedal_gas = 0
     else:
       self.pedal_gas = cp.vl["EMS12"]['TPS']
+    self.pedal_gas = 0
     self.car_gas = cp.vl["EMS12"]['TPS']
 
     # Gear Selection via TCU2
-    if CP.carFingerprint == CAR.KIA_FORTE_KOUP_2013:
+    if self.CP.carFingerprint == CAR.KIA_FORTE_KOUP_2013:
       gear = cp.vl["TCU2"]["CUR_GR"]
       if gear == 0:
         self.gear_shifter = GearShifter.park
@@ -463,6 +470,9 @@ class CarState(CarStateBase):
     self.lkas_button_on = 7 > cp_cam.vl["LKAS11"]["CF_Lkas_LdwsSysState"] != 0
     self.lkas_error = cp_cam.vl["LKAS11"]["CF_Lkas_LdwsSysState"] == 7
 
+    self.gear_shifter = GearShifter.drive
+
+
     # Blind Spot Detection and Lane Change Assist signals
     self.lca_state = cp.vl["LCA11"]["CF_Lca_Stat"]
     self.lca_left = cp.vl["LCA11"]["CF_Lca_IndLeft"]
@@ -474,4 +484,4 @@ class CarState(CarStateBase):
     self.scc12 = cp_scc.vl["SCC12"]
 
     self.mdps12 = cp_mdps.vl["MDPS12"]
-    #self.vsm11 = cp.vl["VSM11"]
+    self.vsm11 = cp.vl["VSM11"]

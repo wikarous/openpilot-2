@@ -123,7 +123,7 @@ def create_mdps12(packer, car_fingerprint, cnt, mdps12):
   values["CF_Mdps_Chksum2"] = checksum
 
   return packer.make_can_msg("MDPS12", 2, values)
-"""
+
 def create_vsm11(packer, vsm11, enabled, mode, steer_req, cnt):
   values = {
     "CR_Esc_StrTqReq": steer_req if enabled else vsm11["CR_Esc_StrTqReq"],
@@ -136,4 +136,4 @@ def create_vsm11(packer, vsm11, enabled, mode, steer_req, cnt):
   dat = packer.make_can_msg("VSM11", 1, values)[2]
   values["CF_Esc_Chksum"] = sum(dat) % 256
   return packer.make_can_msg("VSM11", 1, values)
-"""
+

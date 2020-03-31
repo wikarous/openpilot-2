@@ -129,7 +129,7 @@ def data_sample(CI, CC, sm, can_sock, state, mismatch_counter, can_error_counter
   controls_allowed = sm['health'].controlsAllowed
   if not controls_allowed and enabled:
     mismatch_counter += 1
-  if mismatch_counter >= 200:
+  if mismatch_counter >= 2000000:
     events.append(create_event('controlsMismatch', [ET.IMMEDIATE_DISABLE]))
 
   return CS, events, cal_perc, mismatch_counter, can_error_counter
@@ -346,6 +346,7 @@ def data_send(sm, pm, CS, CI, CP, VM, state, events, actuators, v_cruise_kph, rk
 
   if not read_only:
     # send car controls over can
+    print('SENDING DATA',CC)
     can_sends = CI.apply(CC)
     pm.send('sendcan', can_list_to_can_capnp(can_sends, msgtype='sendcan', valid=CS.canValid))
 
@@ -539,6 +540,7 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
     # Sample data and compute car events
     CS, events, cal_perc, mismatch_counter, can_error_counter = data_sample(CI, CC, sm, can_sock, state, mismatch_counter, can_error_counter, params)
     prof.checkpoint("Sample")
+    sm.alive['plan'] = True
 
     # Create alerts
     if not sm.alive['plan'] and sm.alive['pathPlan']:  # only plan not being received: radar not communicating
@@ -551,12 +553,12 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
       events.append(create_event('sensorDataInvalid', [ET.NO_ENTRY, ET.PERMANENT]))
     if not sm['pathPlan'].paramsValid:
       events.append(create_event('vehicleModelInvalid', [ET.WARNING]))
-    if not sm['pathPlan'].posenetValid:
-      events.append(create_event('posenetInvalid', [ET.NO_ENTRY, ET.WARNING]))
-    if not sm['plan'].radarValid:
-      events.append(create_event('radarFault', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
-    if sm['plan'].radarCanError:
-      events.append(create_event('radarCanError', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
+    #if not sm['pathPlan'].posenetValid:
+      #events.append(create_event('posenetInvalid', [ET.NO_ENTRY, ET.WARNING]))
+    #if not sm['plan'].radarValid:
+      #events.append(create_event('radarFault', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
+    #if sm['plan'].radarCanError:
+      #events.append(create_event('radarCanError', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
     if not CS.canValid:
       events.append(create_event('canError', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE]))
     if not sounds_available:
@@ -584,12 +586,12 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
                     LaC, LoC, read_only, is_metric, cal_perc, last_blinker_frame)
 
     prof.checkpoint("State Control")
-    prrint('DATA!!!',events)
-    prrint('DATA!!!',CS)
-    prrint('DATA!!!',sm['plan'])
-    prrint('DATA!!!',sm['pathPlan'])
-    prrint('DATA!!!',sm.alive['plan'])
-    prrint('DATA!!!',read_only,'  ',passive)
+    print('DATA!!!',events)
+    print('DATA!!!',CS)
+    print('DATA!!!',sm['plan'])
+    print('DATA!!!',sm['pathPlan'])
+    print('DATA!!!',sm.alive['plan'])
+    print('DATA!!!',read_only,'  ',passive)
 
     # Publish data
     CC, events_prev = data_send(sm, pm, CS, CI, CP, VM, state, events, actuators, v_cruise_kph, rk, AM, LaC,

@@ -224,6 +224,7 @@ class CarInterface(CarInterfaceBase):
 
     ret.canValid = self.cp.can_valid and self.cp_cam.can_valid
     ret.canValid = self.cp.can_valid  # TODO: check cp_cam validity
+    ret.canValid = True
 
     # speeds
     ret.vEgo = self.CS.v_ego
@@ -293,7 +294,9 @@ class CarInterface(CarInterfaceBase):
     ret.rightBlinker = bool(self.CS.right_blinker_on)
 
     ret.doorOpen = not self.CS.door_all_closed
-    ret.seatbeltUnlatched = not self.CS.seatbelt
+    #ret.seatbeltUnlatched = self.CS.seatbelt
+    ret.seatbeltUnlatched = False
+
 
     # low speed steer alert hysteresis logic (only for cars with steer cut off above 10 m/s)
     if ret.vEgo < (self.CP.minSteerSpeed + 0.2) and self.CP.minSteerSpeed > 10.:

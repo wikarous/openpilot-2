@@ -1511,3 +1511,79 @@ BO_ 357 VSM2: 8 XXX
  SG_ CF_Mdps_SErr : 25|1@1+ (1,0) [0|1] "" XXX
  SG_ CF_Mdps_AliveCnt : 48|4@1+ (1,0) [0|15] "" XXX
  SG_ CF_Mdps_Chksum : 56|8@1+ (1,0) [0|255] "" XXX
+
+BO_ 1508 MDPS1: 8 XXX
+    SG_ CF_Mdps_WLmp : 1|2@1+ (1,0) [0|3] "" XXX
+    SG_ CF_Mdps_ALTRequest : 5|1@1+ (1,0) [0|1] "" XXX
+    SG_ CF_Mdps_Flex : 8|3@1+ (1,0) [0|7] "" XXX
+    SG_ CF_Mdps_FlexDisp : 11|1@1+ (1,0) [0|1] "" XXX
+    SG_ CF_Mdps_CurrMode : 12|2@1+ (1,0) [0|3] "" XXX
+
+BO_ 1435 TCU4: 8 XXX
+    SG_ CF_TCU_WarnMsg : 0|3@1+ (1,0) [0|7] "" XXX
+    SG_ CF_TCU_WarnImg : 3|1@1+ (1,0) [0|1] "" XXX
+    SG_ CF_TCU_WarnSnd : 4|1@1+ (1,0) [0|1] "" XXX
+    SG_ CF_Tcu_EolStat : 5|1@1+ (1,0) [0|1] "" XXX
+    SG_ CR_Tcu_GearSelDisp2 : 8|4@1+ (1,0) [0|15] "" XXX
+    SG_ CF_Tcu_StRelStat : 12|1@1+ (1,0) [0|1] "" XXX
+    SG_ CF_Tcu_DriWarn1 : 13|3@1+ (1,0) [0|7] "" XXX
+    SG_ CF_Tcu_DriWarn2 : 16|2@1+ (1,0) [0|3] "" XXX
+    SG_ CF_Tcu_DrivingModeReq : 18|4@1+ (1,0) [0|0] "" XXX
+    SG_ CF_Tcu_DrivingModeDisp : 22|4@1+ (1,0) [0|0] "" XXX
+    SG_ CF_Tcu_SiCluster : 26|5@1+ (1,0) [0|0] "" XXX
+    SG_ CF_Tcu_DSmode_Inf : 31|1@1+ (1,0) [0|1] "" XXX
+    SG_ CF_Tcu_Alive4 : 58|2@1+ (1,0) [0|3] "" XXX
+    SG_ CF_Tcu_ChkSum4 : 60|4@1+ (1,0) [0|15] "" XXX
+
+BO_ 898 EMS9: 8 XXX
+    SG_ CF_Ems_BrkReq : 0|1@1+ (1,0) [0|1] "" XXX
+    SG_ CF_Ems_DnShftReq : 1|4@1+ (1,0) [0|14] "" XXX
+    SG_ CF_Ems_RepModChk : 5|2@1+ (1,0) [0|3] "" XXX
+    SG_ CF_Ems_AAFOpenReq : 7|1@1+ (1,0) [0|1] "" XXX
+    SG_ CF_Ems_DecelReq : 8|12@1+ (0.001,-4.094) [-4.094|0] "m/s^2" XXX
+    SG_ CR_Ems_BstPre : 20|12@1+ (1.322,0) [0|4094] "hPa" XXX
+    SG_ CR_Ems_EngOilTemp : 32|8@1+ (0.75,-40) [0|254] "" XXX
+    SG_ CF_Ems_PumpTPres : 40|8@1+ (3.13725,0) [0|800] "kPa" XXX
+    SG_ CF_Ems_ModeledAmbTemp : 48|8@1+ (0.5,-41) [-40|60] "" XXX
+    SG_ CF_Ems_OPSFail : 56|1@1+ (1,0) [0|1] "" XXX
+    SG_ CF_Ems_ECTTRQLIM : 57|1@1+ (1,0) [0|1] "" XXX
+    SG_ CF_Ems_AliveCounterEMS9 : 58|2@1+ (1,0) [0|3] "" XXX
+    SG_ CF_Ems_ChecksumEMS9 : 60|4@1+ (1,0) [0|15] "" XXX
+
+BO_ 880 TCU3: 8 XXX
+    SG_ N_TGT_LUP : 0|8@1+ (10,500) [500|3040] "rpm" XXX
+    SG_ SLOPE_TCU : 8|6@1+ (0.5,-16) [-16|15.5] "%" XXX
+    SG_ CF_Tcu_InhCda : 14|1@1+ (1,0) [0|1] "" XXX
+    SG_ CF_Tcu_IsgInhib : 15|1@1+ (1,0) [0|1] "" XXX
+    SG_ CF_Tcu_BkeOnReq : 16|2@1+ (1,0) [0|3] "" XXX
+    SG_ CF_Tcu_NCStat : 18|2@1+ (1,0) [0|3] "" XXX
+    SG_ CF_Tcu_TarGr : 20|4@1+ (1,0) [0|15] "" XXX
+    SG_ CF_Tcu_ShfPatt : 24|4@1+ (1,0) [0|15] "" XXX
+    SG_ CF_Tcu_InhVis : 28|1@1+ (1,0) [0|1] "" XXX
+    SG_ CF_Tcu_PRelReq : 29|1@1+ (1,0) [0|1] "" XXX
+    SG_ CF_Tcu_ITPhase : 30|1@1+ (1,0) [0|1] "" XXX
+    SG_ CF_Tcu_ActEcoRdy : 31|1@1+ (1,0) [0|1] "" XXX
+    SG_ CF_Tcu_TqGrdLim : 32|8@1+ (10,0) [0|2540] "Nm/s" XXX
+    SG_ CR_Tcu_IsgTgtRPM : 40|8@1+ (20,0) [0|3500] "rpm" XXX
+    SG_ TQI_TCU_INC : 48|8@1+ (0.390625,0) [0|99.6094] "%" XXX
+    SG_ CF_Tcu_SbwPInfo : 56|1@1+ (1,0) [0|1] "" XXX
+    SG_ CF_Tcu_SptRdy : 57|1@1+ (1,0) [0|1] "" XXX
+    SG_ CF_Tcu_Alive3 : 58|2@1+ (1,0) [0|3] "" XXX
+    SG_ CF_Tcu_ChkSum3 : 60|4@1+ (1,0) [0|15] "" XXX
+
+BO_ 1264 CLU1: 8 XXX
+    SG_ CF_Clu_CruiseSwState : 0|3@1+ (1,0) [0|7] "" XXX
+    SG_ CF_Blr_MaxStat : 3|1@1+ (1,0) [0|1] "" XXX
+    SG_ CF_Clu_SldMainSW : 4|1@1+ (1,0) [0|1] "" XXX
+    SG_ CF_Clu_ParityBit1 : 5|1@1+ (1,0) [0|1] "pulse count" XXX
+    SG_ CF_Clu_SPEED_UNIT : 6|1@1+ (1,0) [0|1] "" XXX
+    SG_ CF_Clu_ParkBrakeSw : 7|1@1+ (1,0) [0|1] "" XXX
+    SG_ CF_Clu_Vanz : 8|9@1+ (0.5,0) [0|255.5] "km/h or MPH" XXX
+    SG_ CF_Clu_AliveCounter : 17|7@1+ (1,0) [0|127] "" XXX
+    SG_ CF_Clu_CruiseSwMain : 24|1@1+ (1,0) [0|1] "" XXX
+    SG_ CF_Clu_VanzDecimal : 25|2@1+ (1,0) [0|0.375] "" XXX
+    SG_ VEHICLE_INFO : 27|3@1+ (1,0) [0|7] "" XXX
+    SG_ CF_Clu_StrRlyState : 30|1@1+ (1,0) [0|1] "" XXX
+    SG_ CF_Clu_SMKOption : 31|1@1+ (1,0) [0|1] "" XXX
+    SG_ R_TqAcnOutC : 32|8@1+ (1,0) [0|51] "Nm" XXX
+    SG_ CF_Clu_Odometer : 40|24@1+ (0.1,0) [0|1.67772e+006] "km" XXX

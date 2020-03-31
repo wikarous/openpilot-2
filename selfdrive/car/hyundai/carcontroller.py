@@ -2,7 +2,7 @@ from cereal import car
 from common.numpy_fast import clip
 from selfdrive.car import apply_std_steer_torque_limits
 from selfdrive.car.hyundai.hyundaican import create_lkas11, create_clu11, \
-                                             create_scc12, create_mdps12
+                                             create_scc12, create_mdps12, create_vsm11
 from selfdrive.car.hyundai.values import Buttons, SteerLimitParams, CAR
 from opendbc.can.packer import CANPacker
 
@@ -139,8 +139,8 @@ class CarController():
     self.scc12_cnt %= 0xF
     self.clu11_cnt = frame % 0x10
     self.mdps12_cnt = frame % 0x100
-
-    #create_vsm11(self.packer, CS.vsm11, enabled, 1, steer_req, self.lkas11_cnt)
+    print('send car data',CS.vsm11, enabled, 1, steer_req, self.lkas11_cnt)
+    can_sends.append(create_vsm11(self.packer, CS.vsm11, 1, 1, steer_req, self.lkas11_cnt))
 
     can_sends.append(create_lkas11(self.packer, self.car_fingerprint, 0, apply_steer, steer_req, self.lkas11_cnt, lkas_active,
                                    CS.lkas11, hud_alert, lane_visible, left_lane_depart, right_lane_depart, keep_stock=True))

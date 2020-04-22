@@ -346,7 +346,7 @@ def data_send(sm, pm, CS, CI, CP, VM, state, events, actuators, v_cruise_kph, rk
 
   if not read_only:
     # send car controls over can
-    print('SENDING DATA',CC)
+    #print('SENDING DATA',CC)
     can_sends = CI.apply(CC)
     pm.send('sendcan', can_list_to_can_capnp(can_sends, msgtype='sendcan', valid=CS.canValid))
 
@@ -551,8 +551,8 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
       events.append(create_event('plannerError', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE]))
     if not sm['pathPlan'].sensorValid:
       events.append(create_event('sensorDataInvalid', [ET.NO_ENTRY, ET.PERMANENT]))
-    if not sm['pathPlan'].paramsValid:
-      events.append(create_event('vehicleModelInvalid', [ET.WARNING]))
+    #if not sm['pathPlan'].paramsValid:
+      #events.append(create_event('vehicleModelInvalid', [ET.WARNING]))
     #if not sm['pathPlan'].posenetValid:
       #events.append(create_event('posenetInvalid', [ET.NO_ENTRY, ET.WARNING]))
     #if not sm['plan'].radarValid:
@@ -586,18 +586,19 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
                     LaC, LoC, read_only, is_metric, cal_perc, last_blinker_frame)
 
     prof.checkpoint("State Control")
-    print('DATA!!!',events)
-    print('DATA!!!',CS)
-    print('DATA!!!',sm['plan'])
-    print('DATA!!!',sm['pathPlan'])
-    print('DATA!!!',sm.alive['plan'])
-    print('DATA!!!',read_only,'  ',passive)
+    #print('DATA!!!',events)
+    #print('DATA!!!',CS)
+    #print('DATA!!!',sm['plan'])
+    #print('DATA!!!',sm['pathPlan'])
+    #print('DATA!!!',sm.alive['plan'])
+    #print('DATA!!!',read_only,'  ',passive)
 
     # Publish data
     CC, events_prev = data_send(sm, pm, CS, CI, CP, VM, state, events, actuators, v_cruise_kph, rk, AM, LaC,
                                 LoC, read_only, start_time, v_acc, a_acc, lac_log, events_prev, last_blinker_frame,
                                 is_ldw_enabled, can_error_counter)
     prof.checkpoint("Sent")
+    #print('DATA!!!',CC)
 
     rk.monitor_time()
     prof.display()

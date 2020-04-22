@@ -5,7 +5,40 @@ const int HYUNDAI_MAX_RATE_UP = 3;
 const int HYUNDAI_MAX_RATE_DOWN = 7;
 const int HYUNDAI_DRIVER_TORQUE_ALLOWANCE = 50;
 const int HYUNDAI_DRIVER_TORQUE_FACTOR = 2;
-const AddrBus HYUNDAI_TX_MSGS[] = {{832, 0}, {832, 1}, {1265, 0}, {1265, 1}, {1265, 2}, {593, 2}, {1057, 0}};
+
+const AddrBus HYUNDAI_TX_MSGS[] = {
+  {832, 0},
+  {832, 1},
+  {1265, 0},
+  {1265, 1},
+  {1265, 2},
+  {593, 2},
+  {912, 0},
+  {912, 1},
+  {912, 2},
+  {1268, 0},
+  {1268, 1},
+  {1268, 2},
+
+  {897, 0},
+  {897, 1},
+  {897, 2},
+
+  {790, 0},
+  {790, 1},
+  {790, 2},
+
+  {1057, 0},
+  {357, 0},
+  {357, 1},
+  {356, 0},
+  {356, 0},
+  {356, 1},
+  {1680, 0},
+  {1680, 1}
+};
+
+// FOR KIA FORTE 2013
 
 // TODO: do checksum and counter checks
 AddrCheckStruct hyundai_rx_checks[] = {

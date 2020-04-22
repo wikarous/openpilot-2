@@ -2,7 +2,7 @@ from cereal import car
 from common.numpy_fast import clip
 from selfdrive.car import apply_std_steer_torque_limits
 from selfdrive.car.hyundai.hyundaican import create_lkas11, create_clu11, \
-                                             create_scc12, create_mdps12, create_vsm11
+                                             create_scc12, create_vsm11, create_vsm2, create_spas11, create_spas12, create_790, create_mdps12
 from selfdrive.car.hyundai.values import Buttons, SteerLimitParams, CAR
 from opendbc.can.packer import CANPacker
 
@@ -73,6 +73,16 @@ class CarController():
     self.lkas_button_last = 0
     self.longcontrol = 0 #TODO: make auto
 
+    self.cnt = 0
+    self.checksum = "NONE"
+    self.checksum_learn_cnt = 0
+    self.en_cnt = 0
+    self.apply_steer_ang = 0.0
+    self.en_spas = 3
+    self.mdps11_stat_last = 0
+    self.lkas = False
+    self.spas_present = True # TODO Make Automatic
+
   def update(self, enabled, CS, frame, actuators, pcm_cancel_cmd, visual_alert,
               left_line, right_line, left_lane_depart, right_lane_depart):
 
@@ -88,8 +98,19 @@ class CarController():
     new_steer = actuators.steer * SteerLimitParams.STEER_MAX
     apply_steer = apply_std_steer_torque_limits(new_steer, self.apply_steer_last, CS.steer_torque_driver, SteerLimitParams)
     self.steer_rate_limited = new_steer != apply_steer
-
-    ### LKAS button to temporarily disable steering
+    """
+    # SPAS limit angle extremes for safety
+    apply_steer_ang_req = np.clip(actuators.steerAngle, -1*(SteerLimitParams.STEER_ANG_MAX), SteerLimitParams.STEER_ANG_MAX)
+    # SPAS limit angle rate for safety
+    if abs(self.apply_steer_ang - apply_steer_ang_req) > 0.6:
+      if apply_steer_ang_req > self.apply_steer_ang:
+        self.apply_steer_ang += 0.5
+      else:
+        self.apply_steer_ang -= 0.5
+    else:
+      self.apply_steer_ang = apply_steer_ang_req
+    """
+    # LKAS button to temporarily disable steering
     if not CS.lkas_error:
       if CS.lkas_button_on != self.lkas_button_last:
         self.lkas_button = not self.lkas_button
@@ -139,8 +160,35 @@ class CarController():
     self.scc12_cnt %= 0xF
     self.clu11_cnt = frame % 0x10
     self.mdps12_cnt = frame % 0x100
-    print('send car data',CS.vsm11, enabled, 1, steer_req, self.lkas11_cnt)
-    can_sends.append(create_vsm11(self.packer, CS.vsm11, 1, 1, steer_req, self.lkas11_cnt))
+    self.spas_cnt = frame % 0x200
+
+    # SPAS11 50hz
+    if (self.cnt % 2) == 0:
+      self.en_cnt += 1
+      can_sends.append(create_spas11(self.packer, (self.spas_cnt / 2), self.en_spas, apply_steer, self.checksum))
+      #can_sends.append(create_spas11(self.packer, (self.spas_cnt / 2), self.en_spas, apply_steer, 'crc8'))
+
+
+    # SPAS12 20Hz
+    if (self.cnt % 5) == 0 and not self.spas_present:
+      can_sends.append(create_spas12(self.packer))
+
+
+    #can_sends.append(create_790())
+    #can_sends.append([790, 0, b'\x00\x00\xff\xff\x00\xff\xff\xff', 0])
+
+
+    #print('send car data',CS.vsm11, enabled, 1, steer_req, self.lkas11_cnt)
+    #can_sends.append(create_vsm11(self.packer, CS.vsm11, 1, 2, steer_req,0, self.clu11_cnt))
+    #can_sends.append(create_vsm11(self.packer, CS.vsm11, 1, 2, steer_req,1, self.clu11_cnt))
+
+    #can_sends.append(create_clu11(self.packer, CS.scc_bus, CS.clu11, Buttons.NONE, clu11_speed, self.clu11_cnt))
+
+    #can_sends.append(create_clu11(self.packer, CS.scc_bus, CS.clu11, Buttons.CANCEL, clu11_speed, self.clu11_cnt))
+
+ 
+    #can_sends.append(create_vsm2(self.packer, CS.vsm2, 1, apply_steer,0, self.lkas11_cnt))
+    #can_sends.append(create_vsm2(self.packer, CS.vsm2, 1, apply_steer,1, self.lkas11_cnt)) 
 
     can_sends.append(create_lkas11(self.packer, self.car_fingerprint, 0, apply_steer, steer_req, self.lkas11_cnt, lkas_active,
                                    CS.lkas11, hud_alert, lane_visible, left_lane_depart, right_lane_depart, keep_stock=True))
@@ -152,8 +200,8 @@ class CarController():
 
     if pcm_cancel_cmd and self.longcontrol:
       can_sends.append(create_clu11(self.packer, CS.scc_bus, CS.clu11, Buttons.CANCEL, clu11_speed, self.clu11_cnt))
-    else: # send mdps12 to LKAS to prevent LKAS error if no cancel cmd
-      can_sends.append(create_mdps12(self.packer, self.car_fingerprint, self.mdps12_cnt, CS.mdps12))
+    #else:  send mdps12 to LKAS to prevent LKAS error if no cancel cmd
+      #can_sends.append(create_mdps12(self.packer, self.car_fingerprint, self.mdps12_cnt, CS.mdps12))
 
     if CS.scc_bus and self.longcontrol and frame % 2: # send scc12 to car if SCC not on bus 0 and longcontrol enabled
       can_sends.append(create_scc12(self.packer, apply_accel, enabled, self.scc12_cnt, CS.scc12))

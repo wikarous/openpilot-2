@@ -3,6 +3,9 @@ from selfdrive.car.hyundai.values import CAR, CHECKSUM
 
 hyundai_checksum = crcmod.mkCrcFun(0x11D, initCrc=0xFD, rev=False, xorOut=0xdf)
 
+def make_can_msg(addr, dat, alt):
+  return [addr, 0, dat, alt]
+
 def create_lkas11(packer, car_fingerprint, bus, apply_steer, steer_req, cnt, enabled, lkas11, hud_alert,
                                    lane_visible, left_lane_depart, right_lane_depart, keep_stock=False):
   values = {
@@ -124,7 +127,7 @@ def create_mdps12(packer, car_fingerprint, cnt, mdps12):
 
   return packer.make_can_msg("MDPS12", 2, values)
 
-def create_vsm11(packer, vsm11, enabled, mode, steer_req, cnt):
+def create_vsm11(packer, vsm11, enabled, mode, steer_req,bus, cnt):
   values = {
     "CR_Esc_StrTqReq": steer_req if enabled else vsm11["CR_Esc_StrTqReq"],
     "CF_Esc_Act": 1 if enabled and steer_req else vsm11["CF_Esc_Act"],
@@ -133,7 +136,74 @@ def create_vsm11(packer, vsm11, enabled, mode, steer_req, cnt):
     "CF_Esc_AliveCnt": cnt,
     "CF_Esc_Chksum": 0,
   }
-  dat = packer.make_can_msg("VSM11", 1, values)[2]
+  dat = packer.make_can_msg("VSM11", bus, values)[2]
   values["CF_Esc_Chksum"] = sum(dat) % 256
-  return packer.make_can_msg("VSM11", 1, values)
+  return packer.make_can_msg("VSM11", bus, values)
+
+def create_vsm2(packer, vsm2, enabled, apply_steer,bus, cnt):
+  values = {
+    "CR_Mdps_StrTq": apply_steer if enabled else vsm2["CR_Esc_StrTqReq"],
+    "CR_Mdps_OutTq": vsm2["CR_Mdps_OutTq"],
+    "CF_Mdps_Def": vsm2["CF_Mdps_Def"],
+    "CF_Mdps_SErr": vsm2["CF_Mdps_SErr"],
+    "CF_Mdps_AliveCnt": vsm2["CF_Mdps_AliveCnt"],
+    "CF_Mdps_Chksum": 0,
+  }
+  dat = packer.make_can_msg("VSM2", bus, values)[2]
+  values["CF_Mdps_Chksum"] = sum(dat) % 256
+  return packer.make_can_msg("VSM2", bus, values)
+
+def create_spas11(packer, cnt, en_spas, apply_steer, checksum):
+  values = {
+    "CF_Spas_Stat": en_spas,
+    "CF_Spas_TestMode": 0,
+    "CR_Spas_StrAngCmd": apply_steer,
+    "CF_Spas_BeepAlarm": 0,
+    "CF_Spas_Mode_Seq": 2,
+    "CF_Spas_AliveCnt": cnt,
+    "CF_Spas_Chksum": 0,
+    "CF_Spas_PasVol": 0,
+  }
+
+  dat = packer.make_can_msg("SPAS11", 0, values)[2]
+  if checksum == "crc8":
+    dat = dat[:6]
+    values["CF_Spas_Chksum"] = hyundai_checksum(dat)
+  else:
+    values["CF_Spas_Chksum"] = sum(dat[:6]) % 256
+  print(packer.make_can_msg("SPAS11", 0, values))
+
+  return packer.make_can_msg("SPAS11", 0, values)
+
+def create_spas12(packer):
+  values = {
+    "CF_Spas_HMI_Stat": 0,
+    "CF_Spas_Disp": 0,
+    "CF_Spas_FIL_Ind": 0,
+    "CF_Spas_FIR_Ind": 0,
+    "CF_Spas_FOL_Ind": 0,
+    "CF_Spas_FOR_Ind": 0,
+    "CF_Spas_VolDown": 0,
+    "CF_Spas_RIL_Ind": 0,
+    "CF_Spas_RIR_Ind": 0,
+    "CF_Spas_FLS_Alarm": 0,
+    "CF_Spas_ROL_Ind": 0,
+    "CF_Spas_ROR_Ind": 0,
+    "CF_Spas_FCS_Alarm": 0,
+    "CF_Spas_FI_Ind": 0,
+    "CF_Spas_RI_Ind": 0,
+    "CF_Spas_FRS_Alarm": 0,
+    "CF_Spas_FR_Alarm": 0,
+    "CF_Spas_RR_Alarm": 0,
+    "CF_Spas_BEEP_Alarm": 0,
+    "CF_Spas_StatAlarm": 0,
+    "CF_Spas_RLS_Alarm": 0,
+    "CF_Spas_RCS_Alarm": 0,
+    "CF_Spas_RRS_Alarm": 0,
+  }
+
+  return packer.make_can_msg("SPAS12", 0, values)
+
+def create_790():
+  return make_can_msg(790, "\x00\x00\xff\xff\x00\xff\xff\xff", 0)
 

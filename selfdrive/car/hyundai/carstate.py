@@ -65,6 +65,14 @@ def get_can_parser(CP):
     ("CF_Esc_Def", "VSM11", 0),
     ("CF_Esc_AliveCnt", "VSM11", 0),
     ("CF_Esc_Chksum", "VSM11", 0),
+
+    ("CR_Mdps_StrTq", "VSM2", 0),
+    ("CR_Mdps_OutTq", "VSM2", 0),
+    ("CF_Mdps_Def", "VSM2", 0),
+    ("CF_Mdps_SErr", "VSM2", 0),
+    ("CF_Mdps_AliveCnt", "VSM2", 0),
+    ("CF_Mdps_Chksum", "VSM2", 0),
+
   ]
 
   checks = [
@@ -485,3 +493,4 @@ class CarState(CarStateBase):
 
     self.mdps12 = cp_mdps.vl["MDPS12"]
     self.vsm11 = cp.vl["VSM11"]
+    self.vsm2 = cp.vl["VSM2"]

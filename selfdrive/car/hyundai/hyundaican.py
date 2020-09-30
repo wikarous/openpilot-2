@@ -155,14 +155,14 @@ def create_vsm2(packer, vsm2, enabled, apply_steer,bus, cnt):
   values["CF_Mdps_Chksum"] = sum(dat) % 256
   return packer.make_can_msg("VSM2", bus, values)
 
-def create_spas11(packer, cnt, en_spas, apply_steer, checksum):
+def create_spas11(packer, frame, en_spas, apply_steer, checksum):
   values = {
     "CF_Spas_Stat": en_spas,
     "CF_Spas_TestMode": 0,
     "CR_Spas_StrAngCmd": apply_steer,
     "CF_Spas_BeepAlarm": 0,
     "CF_Spas_Mode_Seq": 2,
-    "CF_Spas_AliveCnt": cnt,
+    "CF_Spas_AliveCnt": frame % 0x200,
     "CF_Spas_Chksum": 0,
     "CF_Spas_PasVol": 0
   }
@@ -172,15 +172,15 @@ def create_spas11(packer, cnt, en_spas, apply_steer, checksum):
     dat = dat[:6]
     values["CF_Spas_Chksum"] = hyundai_checksum(dat)
   else:
-    #dat = [ord(i) for i in dat]
     values["CF_Spas_Chksum"] = sum(dat[:6]) % 256
+  """
   if en_spas is 3:
     print('3!')
   elif en_spas is 4:
     print('4!')
   elif en_spas is 5:
     print('5!')
-
+  """
   return packer.make_can_msg("SPAS11", 1, values)
 
 #def create_spas12():

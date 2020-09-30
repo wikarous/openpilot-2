@@ -2,7 +2,8 @@ from cereal import car
 from common.numpy_fast import clip
 from selfdrive.car import apply_std_steer_torque_limits
 from selfdrive.car.hyundai.hyundaican import create_lkas11, create_clu11, \
-                                             create_scc12, create_vsm11, create_vsm2, create_spas11, create_spas12, create_790, create_mdps12
+                                             create_scc12, create_vsm11, create_vsm2, create_spas11, create_spas12, create_790, create_mdps12, \
+                                             create_ems11
 from selfdrive.car.hyundai.values import Buttons, SteerLimitParams, CAR
 from opendbc.can.packer import CANPacker
 
@@ -13,6 +14,10 @@ ACCEL_HYST_GAP = 0.02  # don't change accel command for small oscilalitons withi
 ACCEL_MAX = 1.5  # 1.5 m/s2
 ACCEL_MIN = -3.0 # 3   m/s2
 ACCEL_SCALE = max(ACCEL_MAX, -ACCEL_MIN)
+# SPAS steering limits
+STEER_ANG_MAX = 90          # SPAS Max Angle
+STEER_ANG_MAX_RATE = 0.4    # SPAS Degrees per ms
+
 
 def accel_hysteresis(accel, accel_steady):
 
@@ -98,9 +103,9 @@ class CarController():
     new_steer = actuators.steer * SteerLimitParams.STEER_MAX
     apply_steer = apply_std_steer_torque_limits(new_steer, self.apply_steer_last, CS.steer_torque_driver, SteerLimitParams)
     self.steer_rate_limited = new_steer != apply_steer
-    """
+    
     # SPAS limit angle extremes for safety
-    apply_steer_ang_req = np.clip(actuators.steerAngle, -1*(SteerLimitParams.STEER_ANG_MAX), SteerLimitParams.STEER_ANG_MAX)
+    apply_steer_ang_req = clip(actuators.steer, -1*(SteerLimitParams.STEER_ANG_MAX), SteerLimitParams.STEER_ANG_MAX)
     # SPAS limit angle rate for safety
     if abs(self.apply_steer_ang - apply_steer_ang_req) > 0.6:
       if apply_steer_ang_req > self.apply_steer_ang:
@@ -108,8 +113,8 @@ class CarController():
       else:
         self.apply_steer_ang -= 0.5
     else:
-      self.apply_steer_ang = apply_steer_ang_req
-    """
+      self.apply_steer_ang = apply_steer
+    
     # LKAS button to temporarily disable steering
     if not CS.lkas_error:
       if CS.lkas_button_on != self.lkas_button_last:
@@ -163,17 +168,40 @@ class CarController():
     self.spas_cnt = frame % 0x200
 
     # SPAS11 50hz
-    if (self.cnt % 2) == 0:
+
+    if (frame % 2) == 0:
+      if CS.mdps11_stat == 7 and not self.mdps11_stat_last == 7:
+        self.en_spas == 7
+        self.en_cnt = 0
+
+      if self.en_spas == 7 and self.en_cnt >= 8:
+        self.en_spas = 3
+        self.en_cnt = 0
+
+      if self.en_cnt < 8 and enabled and not self.lkas:
+        self.en_spas = 4
+      elif self.en_cnt >= 8 and enabled and not self.lkas:
+        self.en_spas = 5
+
+      if self.lkas or not enabled:
+        self.apply_steer_ang = CS.mdps11_strang
+        self.en_spas = 3
+        self.en_cnt = 0
+
+      self.mdps11_stat_last = CS.mdps11_stat
       self.en_cnt += 1
-      can_sends.append(create_spas11(self.packer, (self.spas_cnt / 2), self.en_spas, apply_steer, self.checksum))
+      can_sends.append(create_spas11(self.packer, (self.spas_cnt / 2), self.en_spas, apply_steer_ang, self.checksum))
       #can_sends.append(create_spas11(self.packer, (self.spas_cnt / 2), self.en_spas, apply_steer, 'crc8'))
 
 
     # SPAS12 20Hz
-    if (self.cnt % 5) == 0 and not self.spas_present:
+    if (self.cnt % 5) == 0:
       can_sends.append(create_spas12(self.packer))
 
+    can_sends.append(create_ems11(self.packer, CS.ems11, enabled))
 
+
+    can_sends.append(create_vsm11(self.packer, CS.vsm11, enabled, 1, steer_req, 1, self.lkas11_cnt))
     #can_sends.append(create_790())
     #can_sends.append([790, 0, b'\x00\x00\xff\xff\x00\xff\xff\xff', 0])
 

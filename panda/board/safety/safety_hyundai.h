@@ -9,34 +9,43 @@ const int HYUNDAI_DRIVER_TORQUE_FACTOR = 2;
 const AddrBus HYUNDAI_TX_MSGS[] = {
   {832, 0},
   {832, 1},
+
   {1265, 0},
   {1265, 1},
-  {1265, 2},
-  {593, 2},
-  {912, 0},
-  {912, 1},
-  {912, 2},
-  {1268, 0},
-  {1268, 1},
-  {1268, 2},
 
   {897, 0},
   {897, 1},
-  {897, 2},
 
   {790, 0},
   {790, 1},
-  {790, 2},
 
   {1057, 0},
-  {357, 0},
-  {357, 1},
-  {356, 0},
+  {1680, 0},
+  {1680, 1},
+
+  //SPAS11
+  {912, 0},
+  {912, 1},
+  //SPAS12
+  {1268, 0},
+  {1268, 1},
+  //VSM11
   {356, 0},
   {356, 1},
-  {1680, 0},
-  {1680, 1}
+  //MDPS bus 1 can data
+  //SAS11
+  {688, 0},
+  {688, 1},
+  //MDPS1
+  {1508, 0},
+  {1508, 1},
+  //VSM2
+  {357, 0},
+  {357, 1}
 };
+
+
+
 
 // FOR KIA FORTE 2013
 
@@ -57,6 +66,7 @@ int OP_LKAS_live = 0;
 int OP_MDPS_live = 0;
 int OP_CLU_live = 0;
 int OP_SCC_live = 0;
+int OP_EMS_live = 0;
 int hyundai_mdps_bus = 0;
 bool hyundai_LCAN_on_bus1 = false;
 bool hyundai_forward_bus1 = false;
@@ -66,8 +76,9 @@ static int hyundai_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
 
   bool valid = addr_safety_check(to_push, hyundai_rx_checks, HYUNDAI_RX_CHECK_LEN,
                                  NULL, NULL, NULL);
+  valid = true;
 
-  if (valid) {
+  //if (valid) {
     int bus = GET_BUS(to_push);
     int addr = GET_ADDR(to_push);
 
@@ -151,7 +162,7 @@ static int hyundai_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
         hyundai_forward_bus1 = true;
       }
     }
-  }
+  //}
   return valid;
 }
 
@@ -160,6 +171,7 @@ static int hyundai_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
   int tx = 1;
   int addr = GET_ADDR(to_send);
   int bus = GET_BUS(to_send);
+
 
   if (!msg_allowed(addr, bus, HYUNDAI_TX_MSGS, sizeof(HYUNDAI_TX_MSGS)/sizeof(HYUNDAI_TX_MSGS[0]))) {
     tx = 0;
@@ -230,6 +242,7 @@ static int hyundai_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
   if (addr == 593) {OP_MDPS_live = 20;}
   if ((addr == 1265) && (GET_BYTES_04(to_send) & 0x7) == 0) {OP_CLU_live = 20;} // only count non-button msg
   if (addr == 1057) {OP_SCC_live = 20;}
+  if (addr == 790) {OP_EMS_live = 20;}
 
   // 1 allows the message through
   return tx;
@@ -240,6 +253,7 @@ static int hyundai_fwd_hook(int bus_num, CAN_FIFOMailBox_TypeDef *to_fwd) {
   int bus_fwd = -1;
   int addr = GET_ADDR(to_fwd);
   int fwd_to_bus1 = -1;
+
   if (hyundai_forward_bus1){fwd_to_bus1 = 1;}
 
   // forward cam to ccan and viceversa, except lkas cmd
@@ -247,7 +261,12 @@ static int hyundai_fwd_hook(int bus_num, CAN_FIFOMailBox_TypeDef *to_fwd) {
     if (bus_num == 0) {
       if (!OP_CLU_live || addr != 1265 || !hyundai_mdps_bus) {
         if (!OP_MDPS_live || addr != 593) {
-          bus_fwd = hyundai_forward_bus1 ? 12 : 2;
+          if (!OP_EMS_live || addr != 790) {
+            bus_fwd = hyundai_forward_bus1 ? 12 : 2;
+          } else {
+            bus_fwd = 2;  // EON create EMS11 for MDPS
+            OP_EMS_live -= 1;
+          }
         } else {
           bus_fwd = fwd_to_bus1;  // EON create MDPS for LKAS
           OP_MDPS_live -= 1;
@@ -295,7 +314,6 @@ static int hyundai_fwd_hook(int bus_num, CAN_FIFOMailBox_TypeDef *to_fwd) {
   }
   return bus_fwd;
 }
-
 
 const safety_hooks hyundai_hooks = {
   .init = nooutput_init,

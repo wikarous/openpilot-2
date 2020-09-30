@@ -802,7 +802,16 @@ BO_ 593 MDPS12: 8 MDPS
  SG_ CF_Mdps_Chksum2 : 24|8@1+ (1.0,0.0) [0.0|255.0] ""  ESC,LDWS_LKAS
  SG_ CF_Mdps_SErr : 37|1@1+ (1.0,0.0) [0.0|1.0] ""  ESC
  SG_ CR_Mdps_StrTq : 40|12@1+ (0.01,-20.48) [-20.48|20.47] "Nm"  ESC
- SG_ CR_Mdps_OutTq : 52|12@1+ (0.1,-204.8) [-204.8|204.7] ""  ESC,LDWS_LKAS
+ SG_ CR_Mdps_OutTq : 52|12@1+ (0KR
+검색
+
+
+
+
+1
+
+아바타 이미지
+.1,-204.8) [-204.8|204.7] ""  ESC,LDWS_LKAS
 
 BO_ 1360 IAP11: 3 IAP
  SG_ CF_Iap_EcoPmodSwi : 0|1@1+ (1.0,0.0) [0.0|1.0] ""  CLU
@@ -1593,3 +1602,13 @@ BO_ 809 ACC: 8 XXX
  SG_ THROTTLE_POS_SENSE : 47|8@0+ (1,0) [0|255] "" XXX
  SG_ BRAKE_ACTIVE_DRIVER : 32|2@1+ (1,0) [0|3] "" XXX
  SG_ GAS_PEDAL_POSITION : 55|8@0+ (1,0) [0|255] "" XXX
+
+BO_ 870 366_EMS: 8 EMS
+ SG_ VS : 40|8@1+ (1,0) [0|255] "km/h" MDPS
+
+BO_ 914 S_MDPS11: 8 XXX
+ SG_ CR_Mdps_StrAng : 24|16@1- (1,0) [0|65535] "" XXX
+ SG_ CF_Mdps_Stat : 0|4@1+ (1,0) [0|15] "" XXX
+ SG_ CF_Mdps_AliveCnt : 47|8@0+ (1,0) [0|255] "" XXX
+ SG_ CF_Mdps_Chksum : 63|8@0+ (1,0) [0|255] "" XXX
+ SG_ CR_Mdps_DrvTq : 8|12@1+ (1,0) [0|15] "" XXX

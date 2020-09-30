@@ -74,6 +74,8 @@ def create_clu11(packer, bus, clu11, button, speed, cnt):
     "CF_Clu_AliveCnt1": cnt,
   }
 
+if CS.clu11["CF_Clu_Vanz"] < 15 and CS.clu11["CF_Clu_CruiseSwState"] == 2 and not self.acc_cruise_state:
+
   return packer.make_can_msg("CLU11", bus, values)
 
 def create_scc12(packer, apply_accel, enabled, cnt, scc12):
@@ -162,18 +164,27 @@ def create_spas11(packer, cnt, en_spas, apply_steer, checksum):
     "CF_Spas_Mode_Seq": 2,
     "CF_Spas_AliveCnt": cnt,
     "CF_Spas_Chksum": 0,
-    "CF_Spas_PasVol": 0,
+    "CF_Spas_PasVol": 0
   }
 
   dat = packer.make_can_msg("SPAS11", 0, values)[2]
-  if checksum == "crc8":
+  if checksum in CHECKSUM["crc8"]:
     dat = dat[:6]
     values["CF_Spas_Chksum"] = hyundai_checksum(dat)
   else:
+    #dat = [ord(i) for i in dat]
     values["CF_Spas_Chksum"] = sum(dat[:6]) % 256
-  print(packer.make_can_msg("SPAS11", 0, values))
+  if en_spas is 3:
+    print('3!')
+  elif en_spas is 4:
+    print('4!')
+  elif en_spas is 5:
+    print('5!')
 
-  return packer.make_can_msg("SPAS11", 0, values)
+  return packer.make_can_msg("SPAS11", 1, values)
+
+#def create_spas12():
+  #return make_can_msg(1268, "\x00\x00\x00\x00\x00\x00\x00\x00", 1)
 
 def create_spas12(packer):
   values = {
@@ -204,6 +215,11 @@ def create_spas12(packer):
 
   return packer.make_can_msg("SPAS12", 0, values)
 
+
 def create_790():
   return make_can_msg(790, "\x00\x00\xff\xff\x00\xff\xff\xff", 0)
 
+def create_ems11(packer, ems11, enabled):
+  if enabled:
+    ems11["VS"] = 0
+  return packer.make_can_msg("EMS11", 1, ems11)

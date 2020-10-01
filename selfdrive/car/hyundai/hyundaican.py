@@ -173,6 +173,12 @@ def create_spas11(packer, frame, en_spas, apply_steer, checksum):
     values["CF_Spas_Chksum"] = hyundai_checksum(dat)
   else:
     values["CF_Spas_Chksum"] = sum(dat[:6]) % 256
+
+
+  #values["CF_Spas_Chksum"] = sum(dat[:6]) % 256
+  dat = dat[:6]
+  values["CF_Spas_Chksum"] = hyundai_checksum(dat)
+
   """
   if en_spas is 3:
     print('3!')

@@ -802,7 +802,8 @@ BO_ 593 MDPS12: 8 MDPS
  SG_ CF_Mdps_Chksum2 : 24|8@1+ (1.0,0.0) [0.0|255.0] ""  ESC,LDWS_LKAS
  SG_ CF_Mdps_SErr : 37|1@1+ (1.0,0.0) [0.0|1.0] ""  ESC
  SG_ CR_Mdps_StrTq : 40|12@1+ (0.01,-20.48) [-20.48|20.47] "Nm"  ESC
- SG_ CR_Mdps_OutTq : 52|12@1+ (0KR
+ SG_ CR_Mdps_OutTq : 52|12@1+ (0.1,-204.8) [-204.8|204.7] ""  ESC,LDWS_LKAS
+
 
 BO_ 1360 IAP11: 3 IAP
  SG_ CF_Iap_EcoPmodSwi : 0|1@1+ (1.0,0.0) [0.0|1.0] ""  CLU

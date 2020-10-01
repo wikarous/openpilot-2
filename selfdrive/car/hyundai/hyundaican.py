@@ -71,10 +71,9 @@ def create_clu11(packer, bus, clu11, button, speed, cnt):
     "CF_Clu_RheostatLevel": clu11["CF_Clu_RheostatLevel"],
     "CF_Clu_CluInfo": clu11["CF_Clu_CluInfo"],
     "CF_Clu_AmpInfo": clu11["CF_Clu_AmpInfo"],
-    "CF_Clu_AliveCnt1": cnt,
+    "CF_Clu_AliveCnt1": cnt
   }
-
-if CS.clu11["CF_Clu_Vanz"] < 15 and CS.clu11["CF_Clu_CruiseSwState"] == 2 and not self.acc_cruise_state:
+  #if CS.clu11["CF_Clu_Vanz"] < 15 and CS.clu11["CF_Clu_CruiseSwState"] == 2 and not self.acc_cruise_state:
 
   return packer.make_can_msg("CLU11", bus, values)
 
@@ -100,7 +99,7 @@ def create_scc12(packer, apply_accel, enabled, cnt, scc12):
     "AEB_CmdAct": scc12["AEB_CmdAct"],
     "AEB_StopReq": scc12["AEB_StopReq"],
     "CR_VSM_Alive": cnt,
-    "CR_VSM_ChkSum": 0,
+    "CR_VSM_ChkSum": 0
   }
 
   dat = packer.make_can_msg("SCC12", 0, values)[2]
@@ -120,7 +119,7 @@ def create_mdps12(packer, car_fingerprint, cnt, mdps12):
     "CF_Mdps_SErr": mdps12["CF_Mdps_SErr"],
     "CR_Mdps_StrTq": mdps12["CR_Mdps_StrTq"],
     "CF_Mdps_FailStat": mdps12["CF_Mdps_FailStat"],
-    "CR_Mdps_OutTq": mdps12["CR_Mdps_OutTq"],
+    "CR_Mdps_OutTq": mdps12["CR_Mdps_OutTq"]
   }
 
   dat = packer.make_can_msg("MDPS12", 2, values)[2]
@@ -149,7 +148,7 @@ def create_vsm2(packer, vsm2, enabled, apply_steer,bus, cnt):
     "CF_Mdps_Def": vsm2["CF_Mdps_Def"],
     "CF_Mdps_SErr": vsm2["CF_Mdps_SErr"],
     "CF_Mdps_AliveCnt": vsm2["CF_Mdps_AliveCnt"],
-    "CF_Mdps_Chksum": 0,
+    "CF_Mdps_Chksum": 0
   }
   dat = packer.make_can_msg("VSM2", bus, values)[2]
   values["CF_Mdps_Chksum"] = sum(dat) % 256
@@ -216,7 +215,7 @@ def create_spas12(packer):
     "CF_Spas_StatAlarm": 0,
     "CF_Spas_RLS_Alarm": 0,
     "CF_Spas_RCS_Alarm": 0,
-    "CF_Spas_RRS_Alarm": 0,
+    "CF_Spas_RRS_Alarm": 0
   }
 
   return packer.make_can_msg("SPAS12", 0, values)

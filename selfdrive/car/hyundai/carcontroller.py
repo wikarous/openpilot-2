@@ -105,7 +105,7 @@ class CarController():
     self.steer_rate_limited = new_steer != apply_steer
     
     # SPAS limit angle extremes for safety
-    apply_steer_ang_req = clip(actuators.steer, -1*(SteerLimitParams.STEER_ANG_MAX), SteerLimitParams.STEER_ANG_MAX)
+    apply_steer_ang_req = clip(actuators.steer, -1*(STEER_ANG_MAX), STEER_ANG_MAX)
     # SPAS limit angle rate for safety
     if abs(self.apply_steer_ang - apply_steer_ang_req) > 1.5:
       if apply_steer_ang_req > self.apply_steer_ang:
@@ -190,7 +190,7 @@ class CarController():
 
       self.mdps11_stat_last = CS.mdps11_stat
       self.en_cnt += 1
-      can_sends.append(create_spas11(self.packer, (frame // 2), self.en_spas, apply_steer_ang, self.checksum))
+      can_sends.append(create_spas11(self.packer, (frame // 2), self.en_spas, self.apply_steer_ang, self.checksum))
       #can_sends.append(create_spas11(self.packer, (self.spas_cnt / 2), self.en_spas, apply_steer, 'crc8'))
 
 
@@ -198,10 +198,10 @@ class CarController():
     if (frame % 5) == 0:
       can_sends.append(create_spas12(self.packer))
 
-    can_sends.append(create_ems11(self.packer, CS.ems11, enabled))
+    #can_sends.append(create_ems11(self.packer, CS.ems11, enabled))
 
 
-    can_sends.append(create_vsm11(self.packer, CS.vsm11, enabled, 1, steer_req, 1, self.lkas11_cnt))
+    #can_sends.append(create_vsm11(self.packer, CS.vsm11, enabled, 1, steer_req, 1, self.lkas11_cnt))
     #can_sends.append(create_790())
     #can_sends.append([790, 0, b'\x00\x00\xff\xff\x00\xff\xff\xff', 0])
 

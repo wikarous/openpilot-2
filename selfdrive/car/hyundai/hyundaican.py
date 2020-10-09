@@ -167,16 +167,33 @@ def create_spas11(packer, frame, en_spas, apply_steer, checksum):
   }
 
   dat = packer.make_can_msg("SPAS11", 0, values)[2]
+  """
   if checksum in CHECKSUM["crc8"]:
     dat = dat[:6]
     values["CF_Spas_Chksum"] = hyundai_checksum(dat)
   else:
     values["CF_Spas_Chksum"] = sum(dat[:6]) % 256
-
+  """
 
   #values["CF_Spas_Chksum"] = sum(dat[:6]) % 256
   dat = dat[:6]
   values["CF_Spas_Chksum"] = hyundai_checksum(dat)
+
+
+  #CHECKSOM TEST
+  #dat = [ord(i) for i in dat]
+  #values["CF_Spas_Chksum"] = sum(dat[:6]) % 256
+
+  # CRC Checksum
+  #crc = hyundai_checksum(dat[:6] + dat[7])
+
+  #dat = [ord(i) for i in dat]
+  # Checksum of first 6 Bytes
+  #cs6b = (sum(dat[:6]) % 256)
+  # Checksum of first 6 Bytes and last Byte
+  #cs7b = ((sum(dat[:6]) + dat[7]) % 256)
+
+
 
   """
   if en_spas is 3:

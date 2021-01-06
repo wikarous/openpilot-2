@@ -3,7 +3,7 @@ from opendbc.can.packer import CANPacker
 
 
 hyundai_checksum = crcmod.mkCrcFun(0x11D, initCrc=0xFD, rev=False, xorOut=0xdf)
-dbc_name = 'kia_forte_koup_2013'
+dbc_name = 'hyundai_kia_generic'
 
 packer = CANPacker(dbc_name)
 values = {
